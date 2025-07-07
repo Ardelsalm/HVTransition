@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homvogue Udupi: A New Era of Profitability</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette Name: "Vibrant Revival" 
+    Hex Codes:
+    - Background: #F0F4F8 (Light Grey-Blue)
+    - Dark Text/Accent: #1A202C (Almost Black)
+    - Primary Accent: #E53E3E (Vibrant Red)
+    - Secondary Accent: #3182CE (Strong Blue)
+    - Tertiary Accent: #38A169 (Success Green)
+    -->
+    <!-- 
+    Application Structure Plan:
+    1.  Hero: Grab attention with the core problem (₹3 Cr loss) and the solution (Strategic Pivot).
+    2.  Phase 1: Detail the showroom closure with key actions (Sale, Asset Management).
+    3.  Phase 2: Introduce the new Studio Model with a KPI dashboard (OPEX, Sales).
+    4.  Visualizations: Use a Bar Chart for the new Sales Mix and a Donut Chart for Opening Costs.
+    5.  Roadmap: A clear, visual timeline for the 3-month validation and 6-month franchise expansion.
+    -->
+    <!-- 
+    Visualization & Content Choices:
+    - Past Loss (₹3 Crores): Goal: Inform. Viz: Single Big Number (HTML/Tailwind). Justification: Maximum impact for the core problem statement.
+    - Sales Channel Breakdown (New): Goal: Compare. Viz: Donut Chart (Chart.js/Canvas). Justification: Clearly shows the proportion of high-value bills by category.
+    - Opening Expenses Breakdown: Goal: Compare/Inform. Viz: Donut Chart (Chart.js/Canvas). Justification: Excellent for showing the composition of the total one-time cost.
+    - Recovery Roadmap: Goal: Organize/Change. Viz: Flow Chart (HTML/CSS/Tailwind). Justification: Shows the clear, sequential path to profitability and franchisee expansion.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F0F4F8;
+            color: #1A202C;
+        }
+        .font-display {
+            font-family: 'Teko', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .donut-chart-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .roadmap-step {
+            display: flex;
+            align-items: center;
+        }
+        .roadmap-arrow {
+            font-size: 2.5rem;
+            color: #A0AEC0;
+            margin: 0 1rem;
+        }
+        @media (max-width: 767px) {
+            .roadmap-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            .roadmap-arrow {
+                transform: rotate(90deg);
+                margin: 1rem 0;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <div class="bg-gray-800 text-white text-center py-20 px-4">
+        <h1 class="font-display text-5xl md:text-7xl uppercase tracking-wider">The Homvogue Pivot</h1>
+        <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto">From a <span class="font-bold text-red-500">₹3 Crore Loss</span> and average monthly sales of **₹18 Lakhs** (consistently less than OPEX) to a New Era of Profitability. This is our strategic evolution.</p>
+    </div>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Phase 1: Showroom Closure -->
+        <section class="my-16">
+            <header class="text-center mb-12">
+                <h2 class="font-display text-5xl md:text-6xl text-blue-600">Phase 1: The Controlled Exit</h2>
+                <p class="mt-2 text-lg">Meticulously winding down the old showroom model by **July 31, 2025** to pave the way for a profitable future.</p>
+            </header>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-5xl text-red-500 mb-4">🏷️</div>
+                    <h3 class="font-bold text-xl mb-2">Inventory Clearance</h3>
+                    <p>Aggressive **up to 70% discount** clearance sale, bolstered by special sales team incentives to liquidate stock efficiently.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-5xl text-red-500 mb-4">🏗️</div>
+                    <h3 class="font-bold text-xl mb-2">Asset Management</h3>
+                    <p>Strategic demolition of outdated interiors and careful recovery of all reusable assets to maximize value.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-5xl text-red-500 mb-4">🤝</div>
+                    <h3 class="font-bold text-xl mb-2">Ethical Transition</h3>
+                    <p>Managing the timely and respectful transition for all branch staff who have voluntarily resigned.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Strategic Rationale for New Model (Updated) -->
+        <section class="my-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="font-display text-4xl md:text-5xl text-blue-600 mb-6">Strategic Rationale: Why the Pivot?</h2>
+                <p class="mb-4 text-lg">Our internal sales data clearly demonstrates that our most valuable and high-margin transactions consistently originate from **premium furniture customization and bespoke interior design projects.** The operational costs associated with our expansive showroom footprint, coupled with **average monthly sales of only ₹18 Lakhs (consistently less than our OPEX)**, are no longer aligned with these core revenue drivers, contributing significantly to the **₹3 Crores loss** incurred in the previous model.</p>
+                <p class="mb-4 text-lg">This evolution is a deliberate pivot towards a more focused, agile, and profitable business model, concentrating on where we truly excel and delivering superior value. The new **studio hybrid format** is specifically designed to recover past losses and drive substantial future growth.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center justify-center">
+                <h3 class="font-display text-3xl text-center mb-4">Composition of High-Value Bills</h3>
+                <p class="text-center text-gray-600 mb-4">Analysis of bills over ₹1 Lakh reveals the core drivers of our premium revenue.</p>
+                <div class="donut-chart-container">
+                    <canvas id="highValueBillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2: The New Studio -->
+        <section class="my-20 bg-white p-8 md:p-12 rounded-lg shadow-2xl">
+            <header class="text-center mb-12">
+                <h2 class="font-display text-5xl md:text-6xl text-blue-600">Phase 2: The Studio Hybrid Launch</h2>
+                <p class="mt-2 text-lg">Launching **August 1, 2025**: A lean, tech-powered model designed for high-margin success.</p>
+            </header>
+            
+            <!-- KPI Dashboard -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-16 text-center">
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="font-bold text-gray-600 text-sm">Monthly Sales</p>
+                    <p class="font-display text-4xl text-green-600">₹12L</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="font-bold text-gray-600 text-sm">Monthly OPEX</p>
+                    <p class="font-display text-4xl text-red-500">₹2.7L</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="font-bold text-gray-600 text-sm">Team Size</p>
+                    <p class="font-display text-4xl text-blue-600">5</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="font-bold text-gray-600 text-sm">Opening Cost</p>
+                    <p class="font-display text-4xl text-red-500">₹4L</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+                <!-- Bar Chart -->
+                <div class="lg:col-span-3">
+                    <h3 class="font-display text-3xl text-center mb-4">New Monthly Sales Mix (Target: ₹12 Lakhs)</h3>
+                    <p class="text-center text-gray-600 mb-4">Our revenue strategy focuses on high-value interior projects, complemented by corporate sales and specialized offerings.</p>
+                    <div class="chart-container">
+                        <canvas id="salesMixChart"></canvas>
+                    </div>
+                </div>
+                <!-- Donut Chart -->
+                <div class="lg:col-span-2">
+                     <h3 class="font-display text-3xl text-center mb-4">Opening Expenses (Total: ₹4 Lakhs)</h3>
+                     <p class="text-center text-gray-600 mb-4">A lean, one-time investment focused on essential setup costs like rent advance and interior work.</p>
+                    <div class="donut-chart-container">
+                        <canvas id="openingExpensesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Roadmap -->
+        <section class="my-20">
+            <header class="text-center mb-12">
+                <h2 class="font-display text-5xl md:text-6xl text-blue-600">Our Path to Scalable Growth</h2>
+                <p class="mt-2 text-lg">A clear, phased approach to validate the model, ensure profitability, and expand through a lean franchise strategy.</p>
+            </header>
+            <div class="flex flex-col md:flex-row justify-center items-center">
+                <div class="roadmap-step">
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-blue-600">
+                        <p class="font-display text-3xl text-blue-600">3 Months</p>
+                        <h3 class="font-bold text-xl my-2">Validate Model</h3>
+                        <p>Achieve consistent sales targets to prove profitability and operational efficiency.</p>
+                    </div>
+                </div>
+                <div class="roadmap-arrow hidden md:block">→</div>
+                 <div class="roadmap-arrow block md:hidden">↓</div>
+                <div class="roadmap-step">
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-green-600">
+                        <p class="font-display text-3xl text-green-600">6 Months</p>
+                        <h3 class="font-bold text-xl my-2">Prepare for Expansion</h3>
+                        <p>Solidify processes and document the successful studio blueprint for replication.</p>
+                    </div>
+                </div>
+                 <div class="roadmap-arrow hidden md:block">→</div>
+                 <div class="roadmap-arrow block md:hidden">↓</div>
+                <div class="roadmap-step">
+                     <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-purple-600">
+                        <p class="font-display text-3xl text-purple-600">6+ Months</p>
+                        <h3 class="font-bold text-xl my-2">Launch Franchises</h3>
+                        <p>Initiate rapid, minimal-expense expansion by launching the proven franchisee model.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-8 px-4 mt-16">
+        <p class="font-bold">A bold, data-driven future for Homvogue Udupi.</p>
+        <p class="text-sm text-gray-400">© 2025 Sabhan Group. All rights reserved.</p>
+    </footer>
+
+<script>
+    const wrapLabel = (label, maxLength) => {
+        if (typeof label !== 'string' || label.length <= maxLength) {
+            return label;
+        }
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).trim().length > maxLength) {
+                if (currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                }
+                currentLine = word;
+            } else {
+                currentLine += ' ' + word;
+            }
+        });
+        if (currentLine.length > 0) {
+            lines.push(currentLine.trim());
+        }
+        return lines;
+    };
+
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        if (!item) return '';
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+            return label.join(' ');
+        }
+        return label;
+    };
+    
+    // Chart 1: Sales Mix (Bar Chart) - New Model Targets
+    const salesCtx = document.getElementById('salesMixChart').getContext('2d');
+    new Chart(salesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Interior Projects', 'Corporate Sales', 'Modular Kitchens', 'Custom Furniture'],
+            datasets: [{
+                label: 'Monthly Sales Target (in Lakhs)',
+                data: [7, 2.5, 1.5, 1],
+                backgroundColor: ['#3182CE', '#38A169', '#6B46C1', '#D69E2E'],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Sales in Lakhs (₹)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart 2: Opening Expenses (Donut Chart)
+    const expensesCtx = document.getElementById('openingExpensesChart').getContext('2d');
+    new Chart(expensesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                wrapLabel('Rent Advance', 16), 
+                wrapLabel('Glass Work', 16),
+                wrapLabel('Documentation', 16),
+                wrapLabel('Electrical & Fittings', 16),
+                wrapLabel('Sign Board & Sticker', 16),
+                wrapLabel('Painting', 16)
+            ],
+            datasets: [{
+                data: [250000, 75000, 25000, 25000, 15000, 10000],
+                backgroundColor: ['#E53E3E', '#3182CE', '#38A169', '#D69E2E', '#6B46C1', '#DD6B20'],
+                borderColor: '#FFFFFF',
+                borderWidth: 4,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 10 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback,
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (Array.isArray(label)) {
+                                label = label.join(' ');
+                            }
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(context.raw);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart 3: High-Value Bills Contribution (Donut Chart) - Old Model Breakdown
+    const highValueBillsCtx = document.getElementById('highValueBillsChart').getContext('2d');
+    new Chart(highValueBillsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                wrapLabel('Custom Furniture Bills', 16), 
+                wrapLabel('Corporate Bills', 16), 
+                wrapLabel('Other High-Value Bills', 16)
+            ],
+            datasets: [{
+                data: [50, 20, 30], // 50% Custom, 20% Corporate, 30% Other
+                backgroundColor: ['#E53E3E', '#3182CE', '#38A169'],
+                borderColor: '#FFFFFF',
+                borderWidth: 4,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 10 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback,
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (Array.isArray(label)) {
+                                label = label.join(' ');
+                            }
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + '%';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
