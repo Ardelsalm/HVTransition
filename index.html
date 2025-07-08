@@ -147,7 +147,9 @@
         .checklist-table tbody tr:nth-child(even) {
             background-color: #F7FAFC; /* Tailwind gray-50 */
         }
-        .checklist-table td select, .checklist-table td input[type="number"], .checklist-table td textarea {
+        .checklist-table td select, 
+        .checklist-table td input[type="number"], 
+        .checklist-table td textarea {
             width: 100%;
             padding: 0.5rem;
             border: 1px solid #CBD5E0; /* Tailwind gray-300 */
@@ -155,10 +157,87 @@
             background-color: #FFFFFF;
             font-size: 0.875rem;
         }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .status-completed .status-indicator { background-color: #38A169; } /* Green */
+        .status-in-progress .status-indicator { background-color: #D69E2E; } /* Orange */
+        .status-not-started .status-indicator { background-color: #E53E3E; } /* Red */
+        .status-on-hold .status-indicator { background-color: #A0AEC0; } /* Grey */
+
         .status-completed { color: #38A169; font-weight: bold; }
         .status-in-progress { color: #D69E2E; font-weight: bold; }
         .status-not-started { color: #E53E3E; font-weight: bold; }
         .status-on-hold { color: #A0AEC0; font-weight: bold; }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #E2E8F0;
+            border-radius: 0.25rem;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #3182CE; /* Blue */
+            width: 0%;
+            border-radius: 0.25rem;
+            transition: width 0.3s ease-in-out;
+        }
+        .progress-bar-completed { background-color: #38A169; } /* Green for 100% */
+
+        /* Responsive table for smaller screens */
+        @media (max-width: 767px) {
+            .checklist-table, .checklist-table thead, .checklist-table tbody, .checklist-table th, .checklist-table td, .checklist-table tr {
+                display: block;
+            }
+            .checklist-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            .checklist-table tr {
+                border: 1px solid #CBD5E0;
+                margin-bottom: 1rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            }
+            .checklist-table td {
+                border: none;
+                border-bottom: 1px solid #E2E8F0;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            .checklist-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding-left: 0.75rem;
+                font-weight: bold;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .checklist-table td:last-child {
+                border-bottom: none;
+            }
+            .checklist-table td select, .checklist-table td input[type="number"], .checklist-table td textarea {
+                text-align: right;
+            }
+            .checklist-table .status-indicator {
+                float: left; /* Keep indicator on the left of the label */
+                margin-top: 4px;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -375,10 +454,11 @@
             <header class="text-center mb-12">
                 <h2 class="font-display text-5xl md:text-6xl text-blue-600">Transition Checklist: Real-time Progress</h2>
                 <p class="mt-2 text-lg">Tracking key tasks for a seamless transition and successful studio launch. Please update status and completion percentage as tasks progress.</p>
+                <p class="text-sm text-gray-500 mt-2">Note: This checklist uses local browser storage for persistence. For multi-user collaboration, a shared database solution would be required.</p>
             </header>
 
             <h3 class="font-display text-3xl text-center text-blue-600 mb-6 mt-8">Phase 1: Controlled Exit (Target: July 31, 2025)</h3>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto shadow-md rounded-lg">
                 <table class="checklist-table">
                     <thead>
                         <tr>
@@ -393,206 +473,258 @@
                     <tbody id="phase1-checklist-body">
                         <!-- Phase 1 Tasks -->
                         <tr data-task-id="P1T1">
-                            <td>Inventory Clearance Sale (up to 70% discount)</td>
-                            <td>Finance, HR, Sales & Marketing</td>
-                            <td>Ongoing (till Jul 31)</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Inventory Clearance Sale (up to 70% discount)</td>
+                            <td data-label="Responsible">Finance, HR, Sales & Marketing</td>
+                            <td data-label="Duration">Ongoing (till Jul 31)</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="60" onchange="updateCompletion(this)"></td>
-                            <td>Aggressive marketing campaigns initiated.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="60" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Aggressive marketing campaigns initiated.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T2">
-                            <td>Sales Team Incentives Setup</td>
-                            <td>Finance, HR, Sales & Marketing (SM)</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Sales Team Incentives Setup</td>
+                            <td data-label="Responsible">Finance, HR, Sales & Marketing (SM)</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
-                                    <option value="Completed" selected>Completed</option>
+                                    <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
-                            <td>Incentive structure finalized and communicated.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="100" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Incentive structure finalized and communicated.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T3">
-                            <td>Documentation with Landlord (Clearance)</td>
-                            <td>Finance</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Documentation with Landlord (Clearance)</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="80" onchange="updateCompletion(this)"></td>
-                            <td>Discussions ongoing, positive progress.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="80" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Discussions ongoing, positive progress.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T4">
-                            <td>Discussion/Intimation with Pragathi Builders</td>
-                            <td>Finance</td>
-                            <td>1 Day</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Discussion/Intimation with Pragathi Builders</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">1 Day</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
-                                    <option value="Completed" selected>Completed</option>
+                                    <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
-                            <td>Email sent today, awaiting formal response.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="100" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Email sent today, awaiting formal response.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T5">
-                            <td>Adjust Rent Dues/Utilities from Advance</td>
-                            <td>Finance</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Adjust Rent Dues/Utilities from Advance</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="50" onchange="updateCompletion(this)"></td>
-                            <td>Part of ongoing landlord discussions.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="50" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Part of ongoing landlord discussions.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T6">
-                            <td>Clear TDS and GST ITC, Assets Calculations, GST ITC Transfer, Depreciation on Movable Assets</td>
-                            <td>Accounts, Finance</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Clear TDS and GST ITC, Assets Calculations, GST ITC Transfer, Depreciation on Movable Assets</td>
+                            <td data-label="Responsible">Accounts, Finance</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be initiated once final figures are clear.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be initiated once final figures are clear.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T7">
-                            <td>Cancel Lease Agreement</td>
-                            <td>Finance</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Cancel Lease Agreement</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Dependent on landlord documentation.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Dependent on landlord documentation.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T8">
-                            <td>Get Clearance from Pragathi Partners</td>
-                            <td>Finance</td>
-                            <td>3 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Get Clearance from Pragathi Partners</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">3 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Will follow up after initial builder intimation.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Will follow up after initial builder intimation.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T9">
-                            <td>Demolition of Interiors</td>
-                            <td>Purchase/Operations</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Demolition of Interiors</td>
+                            <td data-label="Responsible">Purchase/Operations</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Scheduled to begin after major clearance.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Scheduled to begin after major clearance.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T10">
-                            <td>Recovery of Reusable Assets</td>
-                            <td>Purchase/Operations</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Recovery of Reusable Assets</td>
+                            <td data-label="Responsible">Purchase/Operations</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be coordinated with demolition.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be coordinated with demolition.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T11">
-                            <td>Movement of Remaining Inventories</td>
-                            <td>Purchase/Operations</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Movement of Remaining Inventories</td>
+                            <td data-label="Responsible">Purchase/Operations</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Final stage, after clearance sale.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Final stage, after clearance sale.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T12">
-                            <td>Ethical Relieving of Branch Staff</td>
-                            <td>HR</td>
-                            <td>Ongoing (till Jul 31)</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Ethical Relieving of Branch Staff</td>
+                            <td data-label="Responsible">HR</td>
+                            <td data-label="Duration">Ongoing (till Jul 31)</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="70" onchange="updateCompletion(this)"></td>
-                            <td>Voluntary resignations accepted, process ongoing.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="70" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Voluntary resignations accepted, process ongoing.</textarea></td>
                         </tr>
                         <tr data-task-id="P1T13">
-                            <td>Vigilant Oversight (Prevent Theft)</td>
-                            <td>Purchase, Operations, Security</td>
-                            <td>Ongoing (till Jul 31)</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Vigilant Oversight (Prevent Theft)</td>
+                            <td data-label="Responsible">Purchase, Operations, Security</td>
+                            <td data-label="Duration">Ongoing (till Jul 31)</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="90" onchange="updateCompletion(this)"></td>
-                            <td>Daily checks in place.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="90" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Daily checks in place.</textarea></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <h3 class="font-display text-3xl text-center text-blue-600 mb-6 mt-12">Phase 2: Studio Launch (Target: August 1, 2025)</h3>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto shadow-md rounded-lg">
                 <table class="checklist-table">
                     <thead>
                         <tr>
@@ -607,319 +739,403 @@
                     <tbody id="phase2-checklist-body">
                         <!-- Phase 2 Tasks -->
                         <tr data-task-id="P2T1">
-                            <td>Token Advance for New Property (1600 sq ft)</td>
-                            <td>Finance</td>
-                            <td>1 Day</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Token Advance for New Property (1600 sq ft)</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">1 Day</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Scheduled for tomorrow.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Scheduled for tomorrow.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T2">
-                            <td>Secure New Location for Aug 1st Launch</td>
-                            <td>Finance</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Secure New Location for Aug 1st Launch</td>
+                            <td data-label="Responsible">Finance</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Formal lease agreement to be finalized.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Formal lease agreement to be finalized.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T3">
-                            <td>Move 2 ACs from Old Showroom</td>
-                            <td>Purchase/Operations</td>
-                            <td>2 Days</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Move 2 ACs from Old Showroom</td>
+                            <td data-label="Responsible">Purchase/Operations</td>
+                            <td data-label="Duration">2 Days</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be done in last week of July.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be done in last week of July.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T4">
-                            <td>Relocate 2-3 Kitchen Units (Ultrafresh)</td>
-                            <td>Purchase, Accounts, Operations</td>
-                            <td>3 Days</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Relocate 2-3 Kitchen Units (Ultrafresh)</td>
+                            <td data-label="Responsible">Purchase, Accounts, Operations</td>
+                            <td data-label="Duration">3 Days</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be done in last week of July.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be done in last week of July.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T5">
-                            <td>Intimate Ultrafresh about Location Move</td>
-                            <td>Sales & Marketing (SM)</td>
-                            <td>1 Day</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Intimate Ultrafresh about Location Move</td>
+                            <td data-label="Responsible">Sales & Marketing (SM)</td>
+                            <td data-label="Duration">1 Day</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
-                                    <option value="Completed" selected>Completed</option>
+                                    <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
-                            <td>Email sent, follow-up call pending.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="100" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Email sent, follow-up call pending.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T6">
-                            <td>Coordinate Ultrafresh Branding Relocation</td>
-                            <td>Sales & Marketing (SM)</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Ultrafresh Branding Relocation</td>
+                            <td data-label="Responsible">Sales & Marketing (SM)</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>SM to liaise with Ultrafresh team.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">SM to liaise with Ultrafresh team.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T7">
-                            <td>Interior Designer: Create New Studio Layout</td>
-                            <td>Interior Designer, Operations</td>
-                            <td>3 Days</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Interior Designer: Create New Studio Layout</td>
+                            <td data-label="Responsible">Interior Designer, Operations</td>
+                            <td data-label="Duration">3 Days</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="70" onchange="updateCompletion(this)"></td>
-                            <td>Detailed floor measurements taken, initial sketches ready.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="70" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Detailed floor measurements taken, initial sketches ready.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T8">
-                            <td>Design Studio Blueprint (Furniture/Decors)</td>
-                            <td>Interior Designer</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Design Studio Blueprint (Furniture/Decors)</td>
+                            <td data-label="Responsible">Interior Designer</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Dependent on layout finalization.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Dependent on layout finalization.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T9">
-                            <td>Install Two TVs (Design/Ads)</td>
-                            <td>Sales & Marketing (SM), Operations</td>
-                            <td>2 Days</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Install Two TVs (Design/Ads)</td>
+                            <td data-label="Responsible">Sales & Marketing (SM), Operations</td>
+                            <td data-label="Duration">2 Days</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be done during fit-out.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be done during fit-out.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T10">
-                            <td>Coordinate Lighting Work</td>
-                            <td>Purchase/Operations</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Lighting Work</td>
+                            <td data-label="Responsible">Purchase/Operations</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Vendor shortlisting in progress.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Vendor shortlisting in progress.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T11">
-                            <td>Coordinate Painting</td>
-                            <td>Purchase, Accounts, Operations</td>
-                            <td>4 Days</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Painting</td>
+                            <td data-label="Responsible">Purchase, Accounts, Operations</td>
+                            <td data-label="Duration">4 Days</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be scheduled.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be scheduled.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T12">
-                            <td>Coordinate Side Glass Walls</td>
-                            <td>Purchase, Accounts, Operations</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Side Glass Walls</td>
+                            <td data-label="Responsible">Purchase, Accounts, Operations</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Quotation collection.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Quotation collection.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T13">
-                            <td>Coordinate Industrial Works</td>
-                            <td>Purchase, Accounts, Operations</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Industrial Works</td>
+                            <td data-label="Responsible">Purchase, Accounts, Operations</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Initial vendor discussions.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Initial vendor discussions.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T14">
-                            <td>Actively Seek New Interior/Custom Furniture Leads</td>
-                            <td>Sales & Marketing, BDO</td>
-                            <td>Ongoing</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Actively Seek New Interior/Custom Furniture Leads</td>
+                            <td data-label="Responsible">Sales & Marketing, BDO</td>
+                            <td data-label="Duration">Ongoing</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="20" onchange="updateCompletion(this)"></td>
-                            <td>Initial prospecting started during clearance.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="20" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Initial prospecting started during clearance.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T15">
-                            <td>Utilize Clearance Sale for Studio Prospects</td>
-                            <td>Sales & Marketing, BDO</td>
-                            <td>Ongoing (till Jul 31)</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Utilize Clearance Sale for Studio Prospects</td>
+                            <td data-label="Responsible">Sales & Marketing, BDO</td>
+                            <td data-label="Duration">Ongoing (till Jul 31)</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="40" onchange="updateCompletion(this)"></td>
-                            <td>Identifying potential studio clients from showroom visitors.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="40" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Identifying potential studio clients from showroom visitors.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T16">
-                            <td>SAP Software Modifications (Interior Projects)</td>
-                            <td>Accounts, Finance, IT</td>
-                            <td>3 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">SAP Software Modifications (Interior Projects)</td>
+                            <td data-label="Responsible">Accounts, Finance, IT</td>
+                            <td data-label="Duration">3 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Requirements gathering to begin.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Requirements gathering to begin.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T17">
-                            <td>Accounts: Billing/Barcoding for Custom/Bulk</td>
-                            <td>Accounts</td>
-                            <td>2 Weeks</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Accounts: Billing/Barcoding for Custom/Bulk</td>
+                            <td data-label="Responsible">Accounts</td>
+                            <td data-label="Duration">2 Weeks</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>To be defined with SAP modifications.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">To be defined with SAP modifications.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T18">
-                            <td>Plan Initial Sales Campaign (Small Interiors)</td>
-                            <td>Sales & Marketing</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
-                                    <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="On Hold">On Hold</option>
-                                </select>
-                            </td>
-                            <td><input type="number" min="0" max="100" value="50" onchange="updateCompletion(this)"></td>
-                            <td>Campaign brief in progress.</td>
-                        </tr>
-                        <tr data-task-id="P2T19">
-                            <td>Showcase Previous TV Units/Installations</td>
-                            <td>Sales & Marketing</td>
-                            <td>1 Week</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Plan Initial Sales Campaign (Small Interiors)</td>
+                            <td data-label="Responsible">Sales & Marketing</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
-                            <td>Photography/documentation of past projects needed.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="50" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Campaign brief in progress.</textarea></td>
+                        </tr>
+                        <tr data-task-id="P2T19">
+                            <td data-label="Task">Showcase Previous TV Units/Installations</td>
+                            <td data-label="Responsible">Sales & Marketing</td>
+                            <td data-label="Duration">1 Week</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="0" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Photography/documentation of past projects needed.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T20">
-                            <td>Coordinate Third-Party Production Units</td>
-                            <td>Purchase, Interior Designer, Accounts, Operations</td>
-                            <td>Ongoing</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Coordinate Third-Party Production Units</td>
+                            <td data-label="Responsible">Purchase, Interior Designer, Accounts, Operations</td>
+                            <td data-label="Duration">Ongoing</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="60" onchange="updateCompletion(this)"></td>
-                            <td>Existing relationships, new vendor onboarding if needed.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="60" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Existing relationships, new vendor onboarding if needed.</textarea></td>
                         </tr>
                         <tr data-task-id="P2T21">
-                            <td>Implement "Labour Minimum Required" Mode</td>
-                            <td>Interior Designer, Purchase, Accounts, Operations</td>
-                            <td>Ongoing</td>
-                            <td>
-                                <select onchange="updateStatus(this)">
+                            <td data-label="Task">Implement "Labour Minimum Required" Mode</td>
+                            <td data-label="Responsible">Interior Designer, Purchase, Accounts, Operations</td>
+                            <td data-label="Duration">Ongoing</td>
+                            <td data-label="Status">
+                                <span class="status-indicator"></span>
+                                <select onchange="updateStatus(this); saveChecklistData();">
                                     <option value="Not Started">Not Started</option>
-                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </td>
-                            <td><input type="number" min="0" max="100" value="80" onchange="updateCompletion(this)"></td>
-                            <td>Revised project execution protocols being drafted.</td>
+                            <td data-label="Completion (%)">
+                                <input type="number" min="0" max="100" value="80" onchange="updateCompletion(this); saveChecklistData();">
+                                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                            </td>
+                            <td data-label="Remarks"><textarea onchange="saveChecklistData();">Revised project execution protocols being drafted.</textarea></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1150,36 +1366,85 @@
         const statusCell = selectElement.parentElement;
         statusCell.className = ''; // Clear existing status classes
         statusCell.classList.add('font-bold'); // Add font-bold back
-        switch (selectElement.value) {
-            case 'Completed':
-                statusCell.classList.add('status-completed');
-                break;
-            case 'In Progress':
-                statusCell.classList.add('status-in-progress');
-                break;
-            case 'Not Started':
-                statusCell.classList.add('status-not-started');
-                break;
-            case 'On Hold':
-                statusCell.classList.add('status-on-hold');
-                break;
+        
+        const statusValue = selectElement.value;
+        statusCell.classList.add('status-' + statusValue.toLowerCase().replace(' ', '-'));
+        
+        // Update indicator color
+        const indicator = statusCell.querySelector('.status-indicator');
+        if (indicator) {
+            indicator.className = 'status-indicator'; // Reset
+            indicator.classList.add('status-' + statusValue.toLowerCase().replace(' ', '-'));
         }
     }
 
     function updateCompletion(inputElement) {
         const percentage = parseInt(inputElement.value);
-        if (percentage === 100) {
-            inputElement.style.backgroundColor = '#D1FAE5'; // Light green
-        } else if (percentage > 0) {
-            inputElement.style.backgroundColor = '#FEF3C7'; // Light yellow
-        } else {
-            inputElement.style.backgroundColor = '#FFFFFF'; // White
+        const progressBar = inputElement.nextElementSibling.querySelector('.progress-bar');
+        if (progressBar) {
+            progressBar.style.width = percentage + '%';
+            if (percentage === 100) {
+                progressBar.classList.add('progress-bar-completed');
+            } else {
+                progressBar.classList.remove('progress-bar-completed');
+            }
+        }
+    }
+
+    // Function to save checklist data to local storage
+    function saveChecklistData() {
+        const checklistData = [];
+        document.querySelectorAll('.checklist-table tbody tr').forEach(row => {
+            const taskId = row.dataset.taskId;
+            const status = row.querySelector('select').value;
+            const completion = row.querySelector('input[type="number"]').value;
+            const remarks = row.querySelector('textarea').value;
+            checklistData.push({ taskId, status, completion, remarks });
+        });
+        localStorage.setItem('homvogueChecklist', JSON.stringify(checklistData));
+        console.log('Checklist data saved to local storage.');
+    }
+
+    // Function to load checklist data from local storage
+    function loadChecklistData() {
+        const savedData = localStorage.getItem('homvogueChecklist');
+        if (savedData) {
+            const checklistData = JSON.parse(savedData);
+            checklistData.forEach(task => {
+                const row = document.querySelector(`tr[data-task-id="${task.taskId}"]`);
+                if (row) {
+                    const statusSelect = row.querySelector('select');
+                    const completionInput = row.querySelector('input[type="number"]');
+                    const remarksTextarea = row.querySelector('textarea');
+
+                    if (statusSelect) {
+                        statusSelect.value = task.status;
+                        updateStatus(statusSelect); // Apply styling
+                    }
+                    if (completionInput) {
+                        completionInput.value = task.completion;
+                        updateCompletion(completionInput); // Apply styling
+                    }
+                    if (remarksTextarea) {
+                        remarksTextarea.value = task.remarks;
+                    }
+                }
+            });
+            console.log('Checklist data loaded from local storage.');
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        loadChecklistData(); // Load data on page load
+
+        // Initial styling for elements not updated by change events
         document.querySelectorAll('.checklist-table select').forEach(select => updateStatus(select));
         document.querySelectorAll('.checklist-table input[type="number"]').forEach(input => updateCompletion(input));
+
+        // Add event listeners for saving data
+        document.querySelectorAll('.checklist-table select, .checklist-table input[type="number"], .checklist-table textarea').forEach(element => {
+            element.addEventListener('change', saveChecklistData);
+        });
     });
 
 </script>
