@@ -124,6 +124,41 @@
                 min-height: 120px; /* Ensure zones have some height */
             }
         }
+
+        /* Checklist Table Styles */
+        .checklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        .checklist-table th, .checklist-table td {
+            padding: 0.75rem;
+            border: 1px solid #E2E8F0; /* Tailwind gray-200 */
+            text-align: left;
+        }
+        .checklist-table th {
+            background-color: #E0E0E0; /* Light grey */
+            font-weight: 600;
+            color: #2C3E50;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .checklist-table tbody tr:nth-child(even) {
+            background-color: #F7FAFC; /* Tailwind gray-50 */
+        }
+        .checklist-table td select, .checklist-table td input[type="number"], .checklist-table td textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #CBD5E0; /* Tailwind gray-300 */
+            border-radius: 0.25rem;
+            background-color: #FFFFFF;
+            font-size: 0.875rem;
+        }
+        .status-completed { color: #38A169; font-weight: bold; }
+        .status-in-progress { color: #D69E2E; font-weight: bold; }
+        .status-not-started { color: #E53E3E; font-weight: bold; }
+        .status-on-hold { color: #A0AEC0; font-weight: bold; }
     </style>
 </head>
 <body class="antialiased">
@@ -335,6 +370,561 @@
             </div>
         </section>
 
+        <!-- Transition Checklist -->
+        <section class="my-20 bg-white p-8 md:p-12 rounded-lg shadow-2xl">
+            <header class="text-center mb-12">
+                <h2 class="font-display text-5xl md:text-6xl text-blue-600">Transition Checklist: Real-time Progress</h2>
+                <p class="mt-2 text-lg">Tracking key tasks for a seamless transition and successful studio launch. Please update status and completion percentage as tasks progress.</p>
+            </header>
+
+            <h3 class="font-display text-3xl text-center text-blue-600 mb-6 mt-8">Phase 1: Controlled Exit (Target: July 31, 2025)</h3>
+            <div class="overflow-x-auto">
+                <table class="checklist-table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Responsible</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Completion (%)</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="phase1-checklist-body">
+                        <!-- Phase 1 Tasks -->
+                        <tr data-task-id="P1T1">
+                            <td>Inventory Clearance Sale (up to 70% discount)</td>
+                            <td>Finance, HR, Sales & Marketing</td>
+                            <td>Ongoing (till Jul 31)</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="60" onchange="updateCompletion(this)"></td>
+                            <td>Aggressive marketing campaigns initiated.</td>
+                        </tr>
+                        <tr data-task-id="P1T2">
+                            <td>Sales Team Incentives Setup</td>
+                            <td>Finance, HR, Sales & Marketing (SM)</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed" selected>Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
+                            <td>Incentive structure finalized and communicated.</td>
+                        </tr>
+                        <tr data-task-id="P1T3">
+                            <td>Documentation with Landlord (Clearance)</td>
+                            <td>Finance</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="80" onchange="updateCompletion(this)"></td>
+                            <td>Discussions ongoing, positive progress.</td>
+                        </tr>
+                        <tr data-task-id="P1T4">
+                            <td>Discussion/Intimation with Pragathi Builders</td>
+                            <td>Finance</td>
+                            <td>1 Day</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed" selected>Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
+                            <td>Email sent today, awaiting formal response.</td>
+                        </tr>
+                        <tr data-task-id="P1T5">
+                            <td>Adjust Rent Dues/Utilities from Advance</td>
+                            <td>Finance</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="50" onchange="updateCompletion(this)"></td>
+                            <td>Part of ongoing landlord discussions.</td>
+                        </tr>
+                        <tr data-task-id="P1T6">
+                            <td>Clear TDS and GST ITC, Assets Calculations, GST ITC Transfer, Depreciation on Movable Assets</td>
+                            <td>Accounts, Finance</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be initiated once final figures are clear.</td>
+                        </tr>
+                        <tr data-task-id="P1T7">
+                            <td>Cancel Lease Agreement</td>
+                            <td>Finance</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Dependent on landlord documentation.</td>
+                        </tr>
+                        <tr data-task-id="P1T8">
+                            <td>Get Clearance from Pragathi Partners</td>
+                            <td>Finance</td>
+                            <td>3 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Will follow up after initial builder intimation.</td>
+                        </tr>
+                        <tr data-task-id="P1T9">
+                            <td>Demolition of Interiors</td>
+                            <td>Purchase/Operations</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Scheduled to begin after major clearance.</td>
+                        </tr>
+                        <tr data-task-id="P1T10">
+                            <td>Recovery of Reusable Assets</td>
+                            <td>Purchase/Operations</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be coordinated with demolition.</td>
+                        </tr>
+                        <tr data-task-id="P1T11">
+                            <td>Movement of Remaining Inventories</td>
+                            <td>Purchase/Operations</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Final stage, after clearance sale.</td>
+                        </tr>
+                        <tr data-task-id="P1T12">
+                            <td>Ethical Relieving of Branch Staff</td>
+                            <td>HR</td>
+                            <td>Ongoing (till Jul 31)</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="70" onchange="updateCompletion(this)"></td>
+                            <td>Voluntary resignations accepted, process ongoing.</td>
+                        </tr>
+                        <tr data-task-id="P1T13">
+                            <td>Vigilant Oversight (Prevent Theft)</td>
+                            <td>Purchase, Operations, Security</td>
+                            <td>Ongoing (till Jul 31)</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="90" onchange="updateCompletion(this)"></td>
+                            <td>Daily checks in place.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="font-display text-3xl text-center text-blue-600 mb-6 mt-12">Phase 2: Studio Launch (Target: August 1, 2025)</h3>
+            <div class="overflow-x-auto">
+                <table class="checklist-table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Responsible</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Completion (%)</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="phase2-checklist-body">
+                        <!-- Phase 2 Tasks -->
+                        <tr data-task-id="P2T1">
+                            <td>Token Advance for New Property (1600 sq ft)</td>
+                            <td>Finance</td>
+                            <td>1 Day</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Scheduled for tomorrow.</td>
+                        </tr>
+                        <tr data-task-id="P2T2">
+                            <td>Secure New Location for Aug 1st Launch</td>
+                            <td>Finance</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Formal lease agreement to be finalized.</td>
+                        </tr>
+                        <tr data-task-id="P2T3">
+                            <td>Move 2 ACs from Old Showroom</td>
+                            <td>Purchase/Operations</td>
+                            <td>2 Days</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be done in last week of July.</td>
+                        </tr>
+                        <tr data-task-id="P2T4">
+                            <td>Relocate 2-3 Kitchen Units (Ultrafresh)</td>
+                            <td>Purchase, Accounts, Operations</td>
+                            <td>3 Days</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be done in last week of July.</td>
+                        </tr>
+                        <tr data-task-id="P2T5">
+                            <td>Intimate Ultrafresh about Location Move</td>
+                            <td>Sales & Marketing (SM)</td>
+                            <td>1 Day</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed" selected>Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="100" onchange="updateCompletion(this)"></td>
+                            <td>Email sent, follow-up call pending.</td>
+                        </tr>
+                        <tr data-task-id="P2T6">
+                            <td>Coordinate Ultrafresh Branding Relocation</td>
+                            <td>Sales & Marketing (SM)</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>SM to liaise with Ultrafresh team.</td>
+                        </tr>
+                        <tr data-task-id="P2T7">
+                            <td>Interior Designer: Create New Studio Layout</td>
+                            <td>Interior Designer, Operations</td>
+                            <td>3 Days</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="70" onchange="updateCompletion(this)"></td>
+                            <td>Detailed floor measurements taken, initial sketches ready.</td>
+                        </tr>
+                        <tr data-task-id="P2T8">
+                            <td>Design Studio Blueprint (Furniture/Decors)</td>
+                            <td>Interior Designer</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Dependent on layout finalization.</td>
+                        </tr>
+                        <tr data-task-id="P2T9">
+                            <td>Install Two TVs (Design/Ads)</td>
+                            <td>Sales & Marketing (SM), Operations</td>
+                            <td>2 Days</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be done during fit-out.</td>
+                        </tr>
+                        <tr data-task-id="P2T10">
+                            <td>Coordinate Lighting Work</td>
+                            <td>Purchase/Operations</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Vendor shortlisting in progress.</td>
+                        </tr>
+                        <tr data-task-id="P2T11">
+                            <td>Coordinate Painting</td>
+                            <td>Purchase, Accounts, Operations</td>
+                            <td>4 Days</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be scheduled.</td>
+                        </tr>
+                        <tr data-task-id="P2T12">
+                            <td>Coordinate Side Glass Walls</td>
+                            <td>Purchase, Accounts, Operations</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Quotation collection.</td>
+                        </tr>
+                        <tr data-task-id="P2T13">
+                            <td>Coordinate Industrial Works</td>
+                            <td>Purchase, Accounts, Operations</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Initial vendor discussions.</td>
+                        </tr>
+                        <tr data-task-id="P2T14">
+                            <td>Actively Seek New Interior/Custom Furniture Leads</td>
+                            <td>Sales & Marketing, BDO</td>
+                            <td>Ongoing</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="20" onchange="updateCompletion(this)"></td>
+                            <td>Initial prospecting started during clearance.</td>
+                        </tr>
+                        <tr data-task-id="P2T15">
+                            <td>Utilize Clearance Sale for Studio Prospects</td>
+                            <td>Sales & Marketing, BDO</td>
+                            <td>Ongoing (till Jul 31)</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="40" onchange="updateCompletion(this)"></td>
+                            <td>Identifying potential studio clients from showroom visitors.</td>
+                        </tr>
+                        <tr data-task-id="P2T16">
+                            <td>SAP Software Modifications (Interior Projects)</td>
+                            <td>Accounts, Finance, IT</td>
+                            <td>3 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Requirements gathering to begin.</td>
+                        </tr>
+                        <tr data-task-id="P2T17">
+                            <td>Accounts: Billing/Barcoding for Custom/Bulk</td>
+                            <td>Accounts</td>
+                            <td>2 Weeks</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>To be defined with SAP modifications.</td>
+                        </tr>
+                        <tr data-task-id="P2T18">
+                            <td>Plan Initial Sales Campaign (Small Interiors)</td>
+                            <td>Sales & Marketing</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="50" onchange="updateCompletion(this)"></td>
+                            <td>Campaign brief in progress.</td>
+                        </tr>
+                        <tr data-task-id="P2T19">
+                            <td>Showcase Previous TV Units/Installations</td>
+                            <td>Sales & Marketing</td>
+                            <td>1 Week</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="0" onchange="updateCompletion(this)"></td>
+                            <td>Photography/documentation of past projects needed.</td>
+                        </tr>
+                        <tr data-task-id="P2T20">
+                            <td>Coordinate Third-Party Production Units</td>
+                            <td>Purchase, Interior Designer, Accounts, Operations</td>
+                            <td>Ongoing</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="60" onchange="updateCompletion(this)"></td>
+                            <td>Existing relationships, new vendor onboarding if needed.</td>
+                        </tr>
+                        <tr data-task-id="P2T21">
+                            <td>Implement "Labour Minimum Required" Mode</td>
+                            <td>Interior Designer, Purchase, Accounts, Operations</td>
+                            <td>Ongoing</td>
+                            <td>
+                                <select onchange="updateStatus(this)">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress" selected>In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="On Hold">On Hold</option>
+                                </select>
+                            </td>
+                            <td><input type="number" min="0" max="100" value="80" onchange="updateCompletion(this)"></td>
+                            <td>Revised project execution protocols being drafted.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <!-- The Roadmap -->
         <section class="my-20">
@@ -554,6 +1144,44 @@
             }
         }
     });
+
+    function updateStatus(selectElement) {
+        const row = selectElement.closest('tr');
+        const statusCell = selectElement.parentElement;
+        statusCell.className = ''; // Clear existing status classes
+        statusCell.classList.add('font-bold'); // Add font-bold back
+        switch (selectElement.value) {
+            case 'Completed':
+                statusCell.classList.add('status-completed');
+                break;
+            case 'In Progress':
+                statusCell.classList.add('status-in-progress');
+                break;
+            case 'Not Started':
+                statusCell.classList.add('status-not-started');
+                break;
+            case 'On Hold':
+                statusCell.classList.add('status-on-hold');
+                break;
+        }
+    }
+
+    function updateCompletion(inputElement) {
+        const percentage = parseInt(inputElement.value);
+        if (percentage === 100) {
+            inputElement.style.backgroundColor = '#D1FAE5'; // Light green
+        } else if (percentage > 0) {
+            inputElement.style.backgroundColor = '#FEF3C7'; // Light yellow
+        } else {
+            inputElement.style.backgroundColor = '#FFFFFF'; // White
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.checklist-table select').forEach(select => updateStatus(select));
+        document.querySelectorAll('.checklist-table input[type="number"]').forEach(input => updateCompletion(input));
+    });
+
 </script>
 
 </body>
